@@ -16,15 +16,7 @@ exports.getAllRepairs = async (req, res) => {
 
 exports.getRepairById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const repair = await Repairs.findOne({ where: { id } });
-
-    if (!repair) {
-      return res.status(404).json({
-        status: false,
-        msg: "repair not found 😕",
-      });
-    }
+    const { repair } = req;
 
     res.status(200).json({
       status: true,
@@ -38,8 +30,7 @@ exports.getRepairById = async (req, res) => {
 
 exports.createRepair = async (req, res) => {
   try {
-    const { date, userId } = req.body;
-    const newRepair = await Repairs.create({ date, userId });
+    const { date, userId, motorsNumber, description } = req.body;
 
     const user = await User.findOne({ where: { id: userId } });
 
@@ -49,6 +40,12 @@ exports.createRepair = async (req, res) => {
         msg: "useId not exist 😥",
       });
     }
+    const newRepair = await Repairs.create({
+      date,
+      userId,
+      motorsNumber,
+      description,
+    });
 
     res.json({
       status: true,
@@ -62,15 +59,7 @@ exports.createRepair = async (req, res) => {
 
 exports.updateRepair = async (req, res) => {
   try {
-    const { id } = req.params;
-    const repair = await Repairs.findOne({ where: { id } });
-
-    if (!repair) {
-      return res.status(404).json({
-        status: false,
-        msg: "repair not found 😥",
-      });
-    }
+    const { repair } = req;
 
     const repairUpdated = await repair.update({ status: "completed" });
 
@@ -86,15 +75,9 @@ exports.updateRepair = async (req, res) => {
 
 exports.deleteRepair = async (req, res) => {
   try {
-    const { id } = req.params;
-    const repair = await Repairs.findOne({ where: { id } });
+    const { repair } = req;
+
     const { status } = repair;
-    if (!repair) {
-      return res.status(404).json({
-        status: false,
-        msg: "repair not found 😥",
-      });
-    }
 
     if (status === "completed") {
       return res.status(400).json({

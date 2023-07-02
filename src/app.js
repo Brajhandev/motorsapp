@@ -9,6 +9,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/v1/users", usersRouter);
-app.use("/api/v1/repair", repairRouter);
+app.use("/api/v1/repairs", repairRouter);
 
 module.exports = app;
